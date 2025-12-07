@@ -1,35 +1,29 @@
+// pages/_app.js
 import '../styles/globals.css';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { useRouter } from 'next/router';
 import Head from 'next/head';
 
 export default function App({ Component, pageProps }) {
-  const router = useRouter();
-  const isHomePage = router.pathname === '/';
-
   return (
     <>
       <Head>
-        <link rel="icon" href="/favicon.png" />
-        <link rel="shortcut icon" href="/favicon.png" />
+        {/* Use your PNG favicon in /public */}
+        <link rel="icon" type="image/png" href="/favicon.png" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1"
+        />
       </Head>
 
-      {isHomePage ? (
-        <>
-          <Header />
-          <div className="boxed-content">
-            <Component {...pageProps} />
-          </div>
-          <Footer />
-        </>
-      ) : (
-        <>
-          <Header />
-          <Component {...pageProps} />
-          <Footer />
-        </>
-      )}
+      {/* Global header with search bar – stays mounted across pages */}
+      <Header />
+
+      {/* Page content */}
+      <Component {...pageProps} />
+
+      {/* Global footer */}
+      <Footer />
     </>
   );
 }

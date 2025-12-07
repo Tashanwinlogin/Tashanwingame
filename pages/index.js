@@ -1,22 +1,50 @@
 import Head from 'next/head';
 
 export default function Home() {
-  // SEO Variables
-  const siteUrl = "https://yourdomain.com"; // CHANGE THIS TO YOUR ACTUAL DOMAIN
-  const pageTitle = "Tashan Win Game Login - Official Registration & Referral Code 2025";
-  const pageDescription = "Tashan Win Game Login with referral code 0275132242. Get instant access to exciting games, daily bonuses, and fast withdrawals. Join thousands of winning players today!";
-  const keywords = "tashan win game, tashan win login, tashan win game login, tashan win referral code, tashan win app, tashan win withdrawal, online gaming platform";
-  const featuredImage = `${siteUrl}/featured-image.jpg`;
+  const siteUrl = 'https://yourdomain.com'; // TODO: change to your real domain
+
+  const organizationJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'Tashan Win Game',
+    url: siteUrl,
+    logo: `${siteUrl}/logo.png`,
+    contactPoint: [
+      {
+        '@type': 'ContactPoint',
+        contactType: 'customer support',
+        email: 'support@tashanwin.com',
+        url: `${siteUrl}/contact`,
+      },
+    ],
+  };
+
+  const webSiteJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'Tashan Win Game',
+    url: siteUrl,
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: `${siteUrl}/search?q={search_term_string}`,
+      'query-input': 'required name=search_term_string',
+    },
+  };
 
   return (
     <>
       <Head>
-        {/* Primary Meta Tags */}
-        <title>{pageTitle}</title>
-        <meta name="title" content={pageTitle} />
-        <meta name="description" content={pageDescription} />
-        <meta name="keywords" content={keywords} />
-        <meta name="author" content="Tashan Win" />
+        {/* Primary Meta Tags - BRAND ONLY */}
+        <title>Tashan Win Game – Official Homepage</title>
+        <meta
+          name="description"
+          content="Official homepage of Tashan Win Game. Use this site to find the correct login portal, read safety and help articles, and reach the About and Contact pages for support."
+        />
+        <meta
+          name="keywords"
+          content="Tashan Win Game, TashanWin, Tashan Win official site"
+        />
+        <meta name="author" content="Tashan Win Game" />
         <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
         <meta name="googlebot" content="index, follow" />
         <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
@@ -24,126 +52,59 @@ export default function Home() {
         <meta name="revisit-after" content="7 days" />
         
         {/* Canonical URL */}
-        <link rel="canonical" href={siteUrl} />
+        <link rel="canonical" href={siteUrl + '/'} />
         
         {/* Open Graph / Facebook */}
         <meta property="og:type" content="website" />
-        <meta property="og:url" content={siteUrl} />
-        <meta property="og:title" content={pageTitle} />
-        <meta property="og:description" content={pageDescription} />
-        <meta property="og:image" content={featuredImage} />
+        <meta property="og:url" content={siteUrl + '/'} />
+        <meta property="og:title" content="Tashan Win Game – Official Homepage" />
+        <meta
+          property="og:description"
+          content="Tashan Win Game official homepage with login link, safety guides, About and Contact information."
+        />
+        <meta property="og:image" content={`${siteUrl}/post-logo.jpg`} />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
-        <meta property="og:site_name" content="Tashan Win" />
+        <meta property="og:site_name" content="Tashan Win Game" />
         <meta property="og:locale" content="en_US" />
+        
+        {/* Help Google understand About / Contact as important brand pages */}
+        <meta property="og:see_also" content={siteUrl + '/about'} />
+        <meta property="og:see_also" content={siteUrl + '/contact'} />
         
         {/* Twitter */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:url" content={siteUrl} />
-        <meta name="twitter:title" content={pageTitle} />
-        <meta name="twitter:description" content={pageDescription} />
-        <meta name="twitter:image" content={featuredImage} />
+        <meta name="twitter:url" content={siteUrl + '/'} />
+        <meta name="twitter:title" content="Tashan Win Game – Official Homepage" />
+        <meta
+          name="twitter:description"
+          content="Tashan Win Game official homepage with login link, safety guides, About and Contact information."
+        />
+        <meta name="twitter:image" content={`${siteUrl}/post-logo.jpg`} />
         
         {/* Additional Meta Tags */}
         <meta name="theme-color" content="#000000" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-        <meta name="apple-mobile-web-app-title" content="Tashan Win" />
+        <meta name="apple-mobile-web-app-title" content="Tashan Win Game" />
         
         {/* Favicon */}
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.png" type="image/png" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         
-        {/* Structured Data - Organization */}
+        {/* Structured Data - Organization (brand-focused) */}
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Organization",
-              "name": "Tashan Win",
-              "url": siteUrl,
-              "logo": `${siteUrl}/post-logo.jpg`,
-              "description": "Leading online gaming platform with instant withdrawals and exciting gameplay",
-              "sameAs": [
-                "https://t.me/yourchannelusername"
-              ]
-            })
-          }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
         />
         
-        {/* Structured Data - FAQPage */}
+        {/* Structured Data - WebSite */}
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "FAQPage",
-              "mainEntity": [
-                {
-                  "@type": "Question",
-                  "name": "What is the referral code for Tashan Win?",
-                  "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Use referral code 0275132242 during registration to receive exclusive bonuses and rewards."
-                  }
-                },
-                {
-                  "@type": "Question",
-                  "name": "How long does withdrawal take on Tashan Win?",
-                  "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "UPI withdrawals typically process within 30 minutes to 2 hours during business hours. Bank transfers take 1-3 business days."
-                  }
-                },
-                {
-                  "@type": "Question",
-                  "name": "What is the minimum withdrawal amount?",
-                  "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "The minimum withdrawal varies by payment method. UPI transfers usually require ₹100 minimum, while bank transfers may need ₹200 or more."
-                  }
-                },
-                {
-                  "@type": "Question",
-                  "name": "Do I need to verify my account?",
-                  "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Yes, account verification is required before making your first withdrawal. Submit valid ID documents during the one-time verification process."
-                  }
-                },
-                {
-                  "@type": "Question",
-                  "name": "Is Tashan Win available on mobile devices?",
-                  "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Yes, Tashan Win is fully optimized for mobile devices. You can play on smartphones and tablets with smooth performance."
-                  }
-                }
-              ]
-            })
-          }}
-        />
-        
-        {/* Structured Data - VideoObject */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "VideoObject",
-              "name": "Tashan Win Game Tutorial",
-              "description": "Complete video guide for Tashan Win Game registration and gameplay tips",
-              "thumbnailUrl": "https://img.youtube.com/vi/zLhWPseOzP0/maxresdefault.jpg",
-              "uploadDate": "2024-11-16",
-              "contentUrl": "https://www.youtube.com/watch?v=zLhWPseOzP0",
-              "embedUrl": "https://www.youtube.com/embed/zLhWPseOzP0"
-            })
-          }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(webSiteJsonLd) }}
         />
       </Head>
-
       <div style={{ 
         backgroundColor: 'black', 
         minHeight: '100vh',

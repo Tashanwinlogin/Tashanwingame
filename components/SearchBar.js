@@ -2,104 +2,138 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Fuse from 'fuse.js';
+import Link from 'next/link';
 
 let fuse = null;
+let cachedIndex = null;
 
-export default function SearchBar({ expanded = true, className = '' }) {
+export default function SearchBar() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [focused, setFocused] = useState(false);
+  const containerRef = useRef(null);
   const inputRef = useRef(null);
 
-  // Load search index on mount
+  // Load index once
   useEffect(() => {
-    if (!fuse) {
-      fetch('/search-index.json')
-        .then((res) => res.json())
-        .then((data) => {
-          fuse = new Fuse(data, {
-            keys: ['title', 'excerpt', 'content', 'tags'],
-            threshold: 0.3,
-            ignoreLocation: true,
-          });
-        })
-        .catch((err) => console.error('Search index load failed:', err));
-    }
+    if (cachedIndex) return;
+    setLoading(true);
+    fetch('/search-index.json')
+      .then((r) => r.json())
+      .then((data) => {
+        cachedIndex = data;
+        fuse = new Fuse(data, {
+          keys: ['title', 'excerpt', 'content', 'tags'],
+          threshold: 0.25,
+          includeScore: true,
+          ignoreLocation: true,
+        });
+      })
+      .finally(() => setLoading(false));
   }, []);
 
-  // Search on query change
+  // Live search
   useEffect(() => {
-    if (!query.trim()) {
+    if (!query.trim() || !fuse) {
       setResults([]);
-      setLoading(false);
       return;
     }
-    if (!fuse) {
-      setLoading(true);
-      return;
-    }
-
-    const matches = fuse.search(query).slice(0, 5);
+    const matches = fuse.search(query).slice(0, 8);
     setResults(matches.map((m) => m.item));
-    setLoading(false);
   }, [query]);
 
-  // Auto-focus when expanded (desktop header)
-  useEffect(() => {
-    if (expanded && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [expanded]);
+  const clearAll = () => {
+    setQuery('');
+    setResults([]);
+    inputRef.current?.blur();
+  };
 
   return (
-    <div className={`relative w-full ${className}`}>
-      {/* Search Input */}
-      <div className="relative">
-        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
-          🔍
+    <div ref={containerRef} className="w-full max-w-3xl mx-auto relative">
+      {/* BAR */}
+      <div
+        className={`relative flex items-stretch bg-black/80 backdrop-blur-xl rounded-3xl overflow-hidden border-2 
+        ${focused ? 'border-emerald-400 shadow-[0_0_30px_rgba(16,185,129,0.5)]' : 'border-gray-800 shadow-xl'}`}
+      >
+        <div className="w-14 flex items-center justify-center bg-gradient-to-b from-emerald-500/15 to-purple-600/15 border-r border-emerald-500/40">
+          <svg
+            className="w-6 h-6 text-emerald-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.8}
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
+          </svg>
         </div>
+
         <input
           ref={inputRef}
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Live search..."
-          className="w-full h-12 bg-gray-900 border border-gray-700 rounded-full text-white pl-12 pr-4 focus:outline-none focus:border-[var(--gold)] transition-all"
+          onFocus={() => setFocused(true)}
+          onBlur={() => setTimeout(() => setFocused(false), 120)}
+          placeholder="⚡ Instant search games, guides, posts..."
+          className="flex-1 bg-transparent px-5 py-3 text-base sm:text-lg font-semibold text-white 
+                     placeholder:text-gray-500/80 outline-none border-none focus:outline-none
+                     focus:ring-0 focus-visible:ring-0 [-webkit-appearance:none] [-moz-appearance:none] [appearance:none]"
         />
+
+        {query && (
+          <button
+            type="button"
+            onClick={clearAll}
+            className="px-4 text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+          >
+            ✕
+          </button>
+        )}
       </div>
 
-      {/* Results Dropdown */}
-      {query && results.length > 0 && (
-        <ul className="absolute top-full left-0 right-0 mt-2 bg-gray-900 border border-gray-700 rounded-xl shadow-2xl overflow-hidden z-50 max-h-96 overflow-y-auto">
-          {results.map((item) => (
-            <li key={`${item.type || 'item'}-${item.slug}`}>
-              <a
-                href={item.url || '#'}
-                className="block px-6 py-4 hover:bg-gray-800 border-b border-gray-800 last:border-0 transition-colors"
-              >
-                <div className="font-bold text-[var(--gold)] mb-1">
-                  {item.title}
-                </div>
-                <div className="text-sm text-gray-400 line-clamp-2">
-                  {item.excerpt}
-                </div>
-              </a>
-            </li>
-          ))}
-        </ul>
-      )}
+      {/* RESULTS */}
+      {query.trim() && (
+        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-full max-w-3xl bg-black/95 border border-emerald-500/40 rounded-2xl shadow-2xl overflow-hidden z-40">
+          {loading && !cachedIndex && (
+            <div className="px-4 py-3 text-sm text-emerald-300">Searching…</div>
+          )}
 
-      {/* No Results */}
-      {query && !loading && results.length === 0 && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-gray-900 border border-gray-700 rounded-xl p-4 text-center text-gray-500">
-          No results found for "{query}"
-        </div>
-      )}
+          {!loading && results.length === 0 && (
+            <div className="px-4 py-3 text-sm text-gray-400">No results found.</div>
+          )}
 
-      {/* Loading */}
-      {loading && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-gray-900 border border-gray-700 rounded-xl p-4 text-center text-gray-500">
-          Loading...
+          {!loading && results.length > 0 && (
+            <ul className="divide-y divide-gray-800">
+              {results.map((item) => (
+                <li key={item.slug || item.url}>
+                  <Link
+                    href={item.url || '#'}
+                    onClick={clearAll}
+                    className="block px-4 py-3 hover:bg-emerald-500/10 transition-colors"
+                  >
+                    <div className="text-sm font-semibold text-white truncate">
+                      {item.title}
+                    </div>
+                    {item.excerpt && (
+                      <div className="mt-1 text-xs text-gray-400 line-clamp-2">
+                        {item.excerpt}
+                      </div>
+                    )}
+                    {item.tags && item.tags.length > 0 && (
+                      <div className="mt-1 text-[11px] text-emerald-300">
+                        {item.tags.slice(0, 3).join(' • ')}
+                      </div>
+                    )}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       )}
     </div>
