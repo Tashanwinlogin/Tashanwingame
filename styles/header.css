@@ -1,0 +1,13 @@
+.header-menu a {
+  @apply transition-colors duration-200;
+}
+
+.header-menu a:hover {
+  color: var(--gold) !important;
+}
+
+@media (max-width: 768px) {
+  .search-icon {
+    transform: scale(1.2);
+  }
+}

@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --black: #000000;
+  --box-bg: #000000;
+  --header-footer: #1a1a1a;
+  --border: #333;
+  --gold: #FFD700;
+}
+
+@layer base {
+  html, body {
+    height: 100%;
+    background: var(--black);
+    color: white;
+    margin: 0;
+    padding: 0;
+  }
+  #__next {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--black);
+  }
+}
+
+/* Homepage Layout - NO BOX ON MOBILE */
+.boxed-content {
+  width: 100%;
+  flex: 1;
+  background: var(--box-bg);
+  overflow-y: auto; /* Allow scrolling if content is too tall */
+  min-height: calc(100vh - 200px); /* Ensure enough height */
+}
+/* Desktop Only: Show Box */
+@media (min-width: 768px) {
+  .boxed-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    box-shadow: 
+      -30px 0 60px rgba(0,0,0,0.5),
+      30px 0 60px rgba(0,0,0,0.5);
+  }
+}
+
+header {
+  width: 100%;
+  background: var(--header-footer);
+  border-bottom: 1px solid var(--border);
+}
+
+footer {
+  width: 100%;
+  background: var(--header-footer);
+  border-top: 1px solid var(--border);
+  margin-top: auto;
+}
+
+.standard-page {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.standard-page main {
+  flex: 1;
+}

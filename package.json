@@ -1,0 +1,33 @@
+{
+  "name": "automatic-website",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "npm run generate-all && next build",
+    "generate-search": "node lib/generateSearchIndex.js",
+    "generate-sitemap": "node lib/generateSitemap.js",
+    "generate-all": "npm run generate-search && npm run generate-sitemap",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "14.2.5",
+    "react": "^18",
+    "react-dom": "^18",
+    "fuse.js": "^7.0.0",
+    "gray-matter": "^4.0.3",
+    "remark": "^15.0.1",
+    "remark-html": "^16.0.1"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.1",
+    "autoprefixer": "^10.4.17",
+    "postcss": "^8.4.38",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.5"
+  }
+}
