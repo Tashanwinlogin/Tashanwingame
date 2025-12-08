@@ -1,7 +1,7 @@
 import Head from 'next/head';
 
 export default function Home() {
-  const siteUrl = 'https://tasanwinlogin.vercel.app/'; // TODO: change to your real domain
+  const siteUrl = 'https://tashanwingamelogin.vercel.app/'; // TODO: change to your real domain
 
   const organizationJsonLd = {
     '@context': 'https://schema.org',
