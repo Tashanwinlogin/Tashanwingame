@@ -1,7 +1,7 @@
 import Head from 'next/head';
 
 export default function Home() {
-  const siteUrl = 'https://yourdomain.com'; // TODO: change to your real domain
+  const siteUrl = 'https://tasanwinlogin.vercel.app/'; // TODO: change to your real domain
 
   const organizationJsonLd = {
     '@context': 'https://schema.org',
@@ -13,7 +13,7 @@ export default function Home() {
       {
         '@type': 'ContactPoint',
         contactType: 'customer support',
-        email: 'support@tashanwin.com',
+        email: 'support@',
         url: `${siteUrl}/contact`,
       },
     ],
@@ -313,7 +313,7 @@ export default function Home() {
                 <div>
                   <h3 style={{ color: 'gold', marginBottom: '8px', fontSize: '18px', fontWeight: 'bold' }}>Access</h3>
                   <p style={{ color: '#d1d5db', lineHeight: '1.6', margin: 0 }}>
-                    Visit our website <a href="/" style={{ color: 'gold', textDecoration: 'underline', fontWeight: 'bold' }}>TashanWin.com</a>. You can see the Download or Register and Login Buttons - click on it.
+                    Visit our website <a href="/" style={{ color: 'gold', textDecoration: 'underline', fontWeight: 'bold' }}></a>. You can see the Download or Register and Login Buttons - click on it.
                   </p>
                 </div>
               </div>
@@ -528,7 +528,7 @@ export default function Home() {
                 }}>1</div>
                 <div>
                   <p style={{ color: '#d1d5db', lineHeight: '1.6', margin: 0 }}>
-                    Open our website <a href="/" style={{ color: 'gold', textDecoration: 'underline', fontWeight: 'bold' }}>TashanWin.com</a>. You can see Register and Login button - click on it.
+                    Open our website <a href="/" style={{ color: 'gold', textDecoration: 'underline', fontWeight: 'bold' }}></a>. You can see Register and Login button - click on it.
                   </p>
                 </div>
               </div>
