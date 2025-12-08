@@ -12,8 +12,7 @@ export default function SearchBar() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [focused, setFocused] = useState(false);
-  const containerRef = useRef(null);
+  const [open, setOpen] = useState(false); // <-- separate from focus
   const inputRef = useRef(null);
 
   // Load index once
@@ -38,31 +37,32 @@ export default function SearchBar() {
   useEffect(() => {
     if (!query.trim() || !fuse) {
       setResults([]);
+      setOpen(false);          // <-- close when query empty
       return;
     }
     const matches = fuse.search(query).slice(0, 8);
     setResults(matches.map((m) => m.item));
+    setOpen(true);             // <-- open when there is a query
   }, [query]);
 
   const clearAll = () => {
     setQuery('');
     setResults([]);
-    setFocused(false);
+    setOpen(false);
     inputRef.current?.blur();
   };
 
-  // MOBILE FIX: Clear immediately on touch/click BEFORE navigation
-  const handleResultClick = (e) => {
-    e.stopPropagation();
-    clearAll();
+  // Called when user selects a result (mobile-safe)
+  const handleResultPointerDown = () => {
+    clearAll();                // <-- DO NOT hide onBlur, hide here instead
   };
 
   return (
-    <div ref={containerRef} className="w-full max-w-3xl mx-auto relative">
+    <div className="w-full max-w-3xl mx-auto relative">
       {/* BAR */}
       <div
         className={`relative flex items-stretch bg-black/80 backdrop-blur-xl rounded-3xl overflow-hidden border-2 
-        ${focused ? 'border-emerald-400 shadow-[0_0_30px_rgba(16,185,129,0.5)]' : 'border-gray-800 shadow-xl'}`}
+        ${open ? 'border-emerald-400 shadow-[0_0_30px_rgba(16,185,129,0.5)]' : 'border-gray-800 shadow-xl'}`}
       >
         <div className="w-14 flex items-center justify-center bg-gradient-to-b from-emerald-500/15 to-purple-600/15 border-r border-emerald-500/40">
           <svg
@@ -85,12 +85,11 @@ export default function SearchBar() {
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          onFocus={() => setFocused(true)}
-          onBlur={() => setTimeout(() => setFocused(false), 200)}
+          // IMPORTANT: no onBlur hiding here
           placeholder="⚡ Instant search games, guides, posts..."
           className="flex-1 bg-transparent px-5 py-3 text-base sm:text-lg font-semibold text-white 
                      placeholder:text-gray-500/80 outline-none border-none focus:outline-none
-                     focus:ring-0 focus-visible:ring-0 [-webkit-appearance:none] [-moz-appearance:none] [appearance:none]"
+                     focus:ring-0 focus-visible:ring-0"
         />
 
         {query && (
@@ -104,8 +103,8 @@ export default function SearchBar() {
         )}
       </div>
 
-      {/* RESULTS WITH IMAGES */}
-      {query.trim() && (
+      {/* RESULTS */}
+      {open && (
         <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-full max-w-3xl bg-black/95 border border-emerald-500/40 rounded-2xl shadow-2xl overflow-hidden z-40">
           {loading && !cachedIndex && (
             <div className="px-4 py-3 text-sm text-emerald-300">Searching…</div>
@@ -121,12 +120,12 @@ export default function SearchBar() {
                 <li key={item.slug || item.url}>
                   <Link
                     href={item.url || '#'}
-                    onMouseDown={handleResultClick}
-                    onTouchStart={handleResultClick}
+                    // pointer events fire before navigation on both mobile & desktop
+                    onMouseDown={handleResultPointerDown}
+                    onTouchStart={handleResultPointerDown}
                     className="flex items-center gap-3 px-4 py-3 hover:bg-emerald-500/10 transition-colors"
                   >
-                    {/* IMAGE THUMBNAIL */}
-                    {item.image && (
+                    {item.image ? (
                       <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden bg-gray-800 border border-emerald-500/30">
                         <Image
                           src={item.image}
@@ -137,10 +136,7 @@ export default function SearchBar() {
                           unoptimized
                         />
                       </div>
-                    )}
-                    
-                    {/* NO IMAGE FALLBACK ICON */}
-                    {!item.image && (
+                    ) : (
                       <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-lg bg-gradient-to-br from-emerald-500/20 to-purple-600/20 border border-emerald-500/30 flex items-center justify-center">
                         <svg className="w-8 h-8 text-emerald-400/50" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z"/>
@@ -148,7 +144,6 @@ export default function SearchBar() {
                       </div>
                     )}
 
-                    {/* TEXT CONTENT */}
                     <div className="flex-1 min-w-0">
                       <div className="text-sm font-semibold text-white truncate">
                         {item.title}
