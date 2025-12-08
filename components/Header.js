@@ -1,177 +1,141 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import Fuse from 'fuse.js';
-import Link from 'next/link';
-import Image from 'next/image';
+import { useState } from 'react';
+import Navigation from './Navigation';
+import SearchBar from './SearchBar';
 
-let fuse = null;
-let cachedIndex = null;
-
-export default function SearchBar({ expanded = true, onDone }) {
-  const [query, setQuery] = useState('');
-  const [results, setResults] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [open, setOpen] = useState(false); // controls dropdown
-  const inputRef = useRef(null);
-
-  // Load index once
-  useEffect(() => {
-    if (cachedIndex) return;
-    setLoading(true);
-    fetch('/search-index.json')
-      .then((r) => r.json())
-      .then((data) => {
-        cachedIndex = data;
-        fuse = new Fuse(data, {
-          keys: ['title', 'excerpt', 'content', 'tags'],
-          threshold: 0.25,
-          includeScore: true,
-          ignoreLocation: true,
-        });
-      })
-      .finally(() => setLoading(false));
-  }, []);
-
-  // Live search
-  useEffect(() => {
-    if (!query.trim() || !fuse) {
-      setResults([]);
-      setOpen(false);
-      return;
-    }
-    const matches = fuse.search(query).slice(0, 8);
-    setResults(matches.map((m) => m.item));
-    setOpen(true);
-  }, [query]);
-
-  const clearAll = () => {
-    setQuery('');
-    setResults([]);
-    setOpen(false);
-    inputRef.current?.blur();
-  };
-
-  // When a result is clicked – works on desktop + mobile
-  const handleResultClick = () => {
-    // Let Next.js navigation start, then reset + close mobile menu
-    setTimeout(() => {
-      clearAll();
-      onDone?.(); // tells Header to close mobile menu
-    }, 150);
-  };
+export default function Header() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <div className={`w-full ${expanded ? 'max-w-3xl mx-auto' : ''} relative`}>
-      {/* BAR */}
-      <div
-        className={`relative flex items-stretch bg-black/80 backdrop-blur-xl rounded-3xl overflow-hidden border-2 
-        ${open ? 'border-emerald-400 shadow-[0_0_30px_rgba(16,185,129,0.5)]' : 'border-gray-800 shadow-xl'}`}
-      >
-        <div className="w-14 flex items-center justify-center bg-gradient-to-b from-emerald-500/15 to-purple-600/15 border-r border-emerald-500/40">
-          <svg
-            className="w-6 h-6 text-emerald-400"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+    <header className="sticky top-0 z-50 bg-gradient-to-b from-[#1a1a1a] to-[#0f0f0f] border-b border-[#FFD700]/20 shadow-2xl">
+      {/* MOBILE HEADER */}
+      <div className="md:hidden">
+        {/* Top Bar: Logo + Buttons + Menu */}
+        <div className="flex items-center justify-between px-3 h-16">
+          {/* Logo */}
+          <a href="/" className="flex items-center space-x-2">
+            <img src="/logo.png" alt="Logo" className="h-8 w-auto" />
+          </a>
+
+          {/* Auth Buttons (Mobile) */}
+          <div className="flex items-center space-x-2">
+            <a
+              href="/login"
+              className="px-3 py-1.5 text-xs border border-[#FFD700] text-[#FFD700] font-bold rounded"
+            >
+              Login
+            </a>
+            <a
+              href="/register"
+              className="px-3 py-1.5 text-xs bg-gradient-to-r from-[#FFD700] to-[#FFA500] text-black font-bold rounded"
+            >
+              Register
+            </a>
+          </div>
+
+          {/* Hamburger Menu */}
+          <button
+            onClick={() => setMobileMenuOpen((v) => !v)}
+            className="w-9 h-9 flex flex-col items-center justify-center space-y-1"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.8}
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            <span
+              className={`w-5 h-0.5 bg-[#FFD700] transition-all ${
+                mobileMenuOpen ? 'rotate-45 translate-y-1.5' : ''
+              }`}
             />
-          </svg>
+            <span
+              className={`w-5 h-0.5 bg-[#FFD700] transition-all ${
+                mobileMenuOpen ? 'opacity-0' : ''
+              }`}
+            />
+            <span
+              className={`w-5 h-0.5 bg-[#FFD700] transition-all ${
+                mobileMenuOpen ? '-rotate-45 -translate-y-1.5' : ''
+              }`}
+            />
+          </button>
         </div>
 
-        <input
-          ref={inputRef}
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="⚡ Instant search games, guides, posts..."
-          className="flex-1 bg-transparent px-5 py-3 text-base sm:text-lg font-semibold text-white 
-                     placeholder:text-gray-500/80 outline-none border-none focus:outline-none
-                     focus:ring-0 focus-visible:ring-0"
-        />
+        {/* Mobile Menu Dropdown */}
+        {mobileMenuOpen && (
+          <div className="bg-[#0f0f0f] border-t border-gray-800 px-4 py-4">
+            {/* Search */}
+            <div className="mb-4">
+              {/* IMPORTANT: onDone closes menu after clicking a result */}
+              <SearchBar expanded={false} onDone={() => setMobileMenuOpen(false)} />
+            </div>
 
-        {query && (
-          <button
-            type="button"
-            onClick={() => {
-              clearAll();
-              onDone?.();
-            }}
-            className="px-4 text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-colors"
-          >
-            ✕
-          </button>
+            {/* Nav Links */}
+            <div className="space-y-1">
+              <a
+                href="/"
+                className="block py-2.5 px-3 rounded transition text-gray-300 hover:text-[#FFD700] hover:bg-[#FFD700]/5"
+              >
+                Home
+              </a>
+              <a
+                href="/blog"
+                className="block py-2.5 px-3 rounded transition text-gray-300 hover:text-[#FFD700] hover:bg-[#FFD700]/5"
+              >
+                Blog
+              </a>
+              <a
+                href="/about"
+                className="block py-2.5 px-3 rounded transition text-gray-300 hover:text-[#FFD700] hover:bg-[#FFD700]/5"
+              >
+                About
+              </a>
+              <a
+                href="/contact"
+                className="block py-2.5 px-3 rounded transition text-gray-300 hover:text-[#FFD700] hover:bg-[#FFD700]/5"
+              >
+                Contact
+              </a>
+            </div>
+          </div>
         )}
       </div>
 
-      {/* RESULTS */}
-      {open && (
-        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-full max-w-3xl bg-black/95 border border-emerald-500/40 rounded-2xl shadow-2xl overflow-hidden z-40">
-          {loading && !cachedIndex && (
-            <div className="px-4 py-3 text-sm text-emerald-300">Searching…</div>
-          )}
+      {/* DESKTOP HEADER */}
+      <div className="hidden md:block">
+        <div className="w-full border-b border-gray-800/50">
+          <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            {/* Logo */}
+            <a href="/" className="flex items-center">
+              <img src="/logo.png" alt="Logo" className="h-12 w-auto" />
+            </a>
 
-          {!loading && results.length === 0 && (
-            <div className="px-4 py-3 text-sm text-gray-400">No results found.</div>
-          )}
+            {/* Center Search Bar */}
+            <div className="flex-1 max-w-2xl mx-8">
+              <SearchBar expanded={true} />
+            </div>
 
-          {!loading && results.length > 0 && (
-            <ul className="divide-y divide-gray-800">
-              {results.map((item) => (
-                <li key={item.slug || item.url}>
-                  <Link
-                    href={item.url || '#'}
-                    onClick={handleResultClick}
-                    className="flex items-center gap-3 px-4 py-3 hover:bg-emerald-500/10 transition-colors"
-                  >
-                    {/* IMAGE THUMBNAIL (requires image field in search-index.json) */}
-                    {item.image ? (
-                      <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden bg-gray-800 border border-emerald-500/30">
-                        <Image
-                          src={item.image}
-                          alt={item.title || 'Post image'}
-                          width={80}
-                          height={80}
-                          className="w-full h-full object-cover"
-                          unoptimized
-                        />
-                      </div>
-                    ) : (
-                      <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-lg bg-gradient-to-br from-emerald-500/20 to-purple-600/20 border border-emerald-500/30 flex items-center justify-center">
-                        <svg className="w-8 h-8 text-emerald-400/50" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z" />
-                        </svg>
-                      </div>
-                    )}
-
-                    {/* TEXT */}
-                    <div className="flex-1 min-w-0">
-                      <div className="text-sm font-semibold text-white truncate">
-                        {item.title}
-                      </div>
-                      {item.excerpt && (
-                        <div className="mt-1 text-xs text-gray-400 line-clamp-2">
-                          {item.excerpt}
-                        </div>
-                      )}
-                      {item.tags && item.tags.length > 0 && (
-                        <div className="mt-1 text-[11px] text-emerald-300">
-                          {item.tags.slice(0, 3).join(' • ')}
-                        </div>
-                      )}
-                    </div>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          )}
+            {/* Auth Buttons */}
+            <div className="flex items-center space-x-3">
+              <a
+                href="/login"
+                className="px-6 py-2.5 bg-transparent border-2 border-[#FFD700] text-[#FFD700] font-bold rounded-lg hover:bg-[#FFD700]/10 transition-all duration-300 hover:scale-105"
+              >
+                Login
+              </a>
+              <a
+                href="/register"
+                className="px-6 py-2.5 bg-gradient-to-r from-[#FFD700] to-[#FFA500] text-black font-bold rounded-lg hover:shadow-lg hover:shadow-[#FFD700]/50 transition-all duration-300 hover:scale-105"
+              >
+                Register
+              </a>
+            </div>
+          </div>
         </div>
-      )}
-    </div>
+
+        {/* Bottom Row: Navigation Menu */}
+        <div className="w-full">
+          <div className="max-w-7xl mx-auto px-6">
+            <Navigation />
+          </div>
+        </div>
+      </div>
+    </header>
   );
 }
