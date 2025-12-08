@@ -35,7 +35,9 @@ export default function Home() {
     <>
       <Head>
   {/* Primary SEO */}
-  <title>Tashan Win Game APK Download and Login (Official Site)</title>
+ <title>
+  Tashan Win Game » Tashan Win Login & App Download for Free
+</title>
   <meta
     name="description"
     content="Tashan Win Game official site for APK download, secure login, registration guide, game features, and support. Get the latest Tashan Win app, bonus code, and contact details in one place."
