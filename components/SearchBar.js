@@ -12,7 +12,7 @@ export default function SearchBar() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [open, setOpen] = useState(false); // <-- separate from focus
+  const [open, setOpen] = useState(false); // controls dropdown
   const inputRef = useRef(null);
 
   // Load index once
@@ -37,12 +37,12 @@ export default function SearchBar() {
   useEffect(() => {
     if (!query.trim() || !fuse) {
       setResults([]);
-      setOpen(false);          // <-- close when query empty
+      setOpen(false);
       return;
     }
     const matches = fuse.search(query).slice(0, 8);
     setResults(matches.map((m) => m.item));
-    setOpen(true);             // <-- open when there is a query
+    setOpen(true);
   }, [query]);
 
   const clearAll = () => {
@@ -50,11 +50,6 @@ export default function SearchBar() {
     setResults([]);
     setOpen(false);
     inputRef.current?.blur();
-  };
-
-  // Called when user selects a result (mobile-safe)
-  const handleResultPointerDown = () => {
-    clearAll();                // <-- DO NOT hide onBlur, hide here instead
   };
 
   return (
@@ -85,7 +80,6 @@ export default function SearchBar() {
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          // IMPORTANT: no onBlur hiding here
           placeholder="⚡ Instant search games, guides, posts..."
           className="flex-1 bg-transparent px-5 py-3 text-base sm:text-lg font-semibold text-white 
                      placeholder:text-gray-500/80 outline-none border-none focus:outline-none
@@ -120,11 +114,15 @@ export default function SearchBar() {
                 <li key={item.slug || item.url}>
                   <Link
                     href={item.url || '#'}
-                    // pointer events fire before navigation on both mobile & desktop
-                    onMouseDown={handleResultPointerDown}
-                    onTouchStart={handleResultPointerDown}
+                    // Mobile-safe: let navigation start, then close bar
+                    onClick={() => {
+                      setTimeout(() => {
+                        clearAll();
+                      }, 150);
+                    }}
                     className="flex items-center gap-3 px-4 py-3 hover:bg-emerald-500/10 transition-colors"
                   >
+                    {/* IMAGE THUMBNAIL */}
                     {item.image ? (
                       <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden bg-gray-800 border border-emerald-500/30">
                         <Image
@@ -139,11 +137,12 @@ export default function SearchBar() {
                     ) : (
                       <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-lg bg-gradient-to-br from-emerald-500/20 to-purple-600/20 border border-emerald-500/30 flex items-center justify-center">
                         <svg className="w-8 h-8 text-emerald-400/50" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z"/>
+                          <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zm-5.04-6.71l-2.75 3.54-1.96-2.36L6.5 17h11l-3.54-4.71z" />
                         </svg>
                       </div>
                     )}
 
+                    {/* TEXT */}
                     <div className="flex-1 min-w-0">
                       <div className="text-sm font-semibold text-white truncate">
                         {item.title}
