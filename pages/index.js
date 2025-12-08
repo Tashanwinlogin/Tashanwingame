@@ -34,78 +34,119 @@ export default function Home() {
   return (
     <>
       <Head>
-        {/* Primary Meta Tags - BRAND ONLY */}
-        <title>Tashan Win Game – Official Homepage</title>
-        <meta
-          name="description"
-          content="Official homepage of Tashan Win Game. Use this site to find the correct login portal, read safety and help articles, and reach the About and Contact pages for support."
-        />
-        <meta
-          name="keywords"
-          content="Tashan Win Game, TashanWin, Tashan Win official site"
-        />
-        <meta name="author" content="Tashan Win Game" />
-        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-        <meta name="googlebot" content="index, follow" />
-        <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
-        <meta name="language" content="English" />
-        <meta name="revisit-after" content="7 days" />
-        
-        {/* Canonical URL */}
-        <link rel="canonical" href={siteUrl + '/'} />
-        
-        {/* Open Graph / Facebook */}
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content={siteUrl + '/'} />
-        <meta property="og:title" content="Tashan Win Game – Official Homepage" />
-        <meta
-          property="og:description"
-          content="Tashan Win Game official homepage with login link, safety guides, About and Contact information."
-        />
-        <meta property="og:image" content={`${siteUrl}/post-logo.jpg`} />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
-        <meta property="og:site_name" content="Tashan Win Game" />
-        <meta property="og:locale" content="en_US" />
-        
-        {/* Help Google understand About / Contact as important brand pages */}
-        <meta property="og:see_also" content={siteUrl + '/about'} />
-        <meta property="og:see_also" content={siteUrl + '/contact'} />
-        
-        {/* Twitter */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:url" content={siteUrl + '/'} />
-        <meta name="twitter:title" content="Tashan Win Game – Official Homepage" />
-        <meta
-          name="twitter:description"
-          content="Tashan Win Game official homepage with login link, safety guides, About and Contact information."
-        />
-        <meta name="twitter:image" content={`${siteUrl}/post-logo.jpg`} />
-        
-        {/* Additional Meta Tags */}
-        <meta name="theme-color" content="#000000" />
-        <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-        <meta name="apple-mobile-web-app-title" content="Tashan Win Game" />
-        
-        {/* Favicon */}
-        <link rel="icon" href="/favicon.png" type="image/png" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        
-        {/* Structured Data - Organization (brand-focused) */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
-        />
-        
-        {/* Structured Data - WebSite */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(webSiteJsonLd) }}
-        />
-      </Head>
+  {/* Primary SEO */}
+  <title>Tashan Win Game APK Download and Login (Official Site)</title>
+  <meta
+    name="description"
+    content="Tashan Win Game official site for APK download, secure login, registration guide, game features, and support. Get the latest Tashan Win app, bonus code, and contact details in one place."
+  />
+  <meta
+    name="keywords"
+    content="Tashan Win Game, Tashan win game apk download, Tashan win login, Tashanwin app, Tashan Win official site"
+  />
+  <meta name="author" content="Tashan Win Game" />
+  <meta
+    name="robots"
+    content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+  />
+  <meta name="googlebot" content="index, follow" />
+  <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="language" content="English" />
+  <meta name="revisit-after" content="7 days" />
 
+  {/* Canonical */}
+  <link rel="canonical" href={siteUrl + '/'} />
+
+  {/* Open Graph / Facebook – controls link preview */}
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content={siteUrl + '/'} />
+  <meta
+    property="og:title"
+    content="Tashan Win Game APK Download and Login"
+  />
+  <meta
+    property="og:description"
+    content="Download the latest Tashan Win Game APK and access the official login portal, registration help, and support contact from one verified homepage."
+  />
+  {/* Use a square logo, e.g. 600x600, stored as /public/post-logo.jpg */}
+  <meta property="og:image" content={`${siteUrl}/post-logo.jpg`} />
+  <meta property="og:image:width" content="600" />
+  <meta property="og:image:height" content="600" />
+  <meta property="og:site_name" content="Tashan Win Game" />
+  <meta property="og:locale" content="en_US" />
+
+  {/* Help Google see important internal pages for sitelinks */}
+  <meta property="og:see_also" content={siteUrl + '/about'} />
+  <meta property="og:see_also" content={siteUrl + '/contact'} />
+
+  {/* Twitter */}
+  <meta name="twitter:card" content="summary" />
+  <meta
+    name="twitter:title"
+    content="Tashan Win Game APK Download and Login"
+  />
+  <meta
+    name="twitter:description"
+    content="Official Tashan Win Game home – APK download, login, registration, and customer support."
+  />
+  <meta name="twitter:image" content={`${siteUrl}/post-logo.jpg`} />
+  <meta name="twitter:url" content={siteUrl + '/'} />
+
+  {/* Theme / PWA */}
+  <meta name="theme-color" content="#000000" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="apple-mobile-web-app-title" content="Tashan Win Game" />
+
+  {/* Favicon */}
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+  {/* Structured Data - Organization */}
+  <script
+    type="application/ld+json"
+    dangerouslySetInnerHTML={{
+      __html: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        name: 'Tashan Win Game',
+        url: siteUrl,
+        logo: `${siteUrl}/logo.png`,
+        sameAs: [
+          `${siteUrl}/about`,
+          `${siteUrl}/contact`,
+        ],
+        contactPoint: [
+          {
+            '@type': 'ContactPoint',
+            contactType: 'customer support',
+            email: 'support@tashanwin.com',
+            url: `${siteUrl}/contact`,
+          },
+        ],
+      }),
+    }}
+  />
+
+  {/* Structured Data - WebSite */}
+  <script
+    type="application/ld+json"
+    dangerouslySetInnerHTML={{
+      __html: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        name: 'Tashan Win Game',
+        url: siteUrl,
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: `${siteUrl}/search?q={search_term_string}`,
+          'query-input': 'required name=search_term_string',
+        },
+      }),
+    }}
+  />
+</Head>
       {/* Pure Black Website Background */}
       <div style={{ 
         backgroundColor: '#000000',
