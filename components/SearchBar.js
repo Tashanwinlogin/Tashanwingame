@@ -8,11 +8,11 @@ import Image from 'next/image';
 let fuse = null;
 let cachedIndex = null;
 
-export default function SearchBar() {
+export default function SearchBar({ onDone }) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [open, setOpen] = useState(false); // controls dropdown
+  const [open, setOpen] = useState(false);
   const inputRef = useRef(null);
 
   // Load index once
@@ -52,6 +52,15 @@ export default function SearchBar() {
     inputRef.current?.blur();
   };
 
+  // Called after clicking a result (desktop + mobile)
+  const handleResultClick = () => {
+    // let navigation start, then reset state + tell header to close
+    setTimeout(() => {
+      clearAll();
+      onDone?.();        // <-- collapse mobile header search
+    }, 150);
+  };
+
   return (
     <div className="w-full max-w-3xl mx-auto relative">
       {/* BAR */}
@@ -89,7 +98,10 @@ export default function SearchBar() {
         {query && (
           <button
             type="button"
-            onClick={clearAll}
+            onClick={() => {
+              clearAll();
+              onDone?.();
+            }}
             className="px-4 text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-colors"
           >
             ✕
@@ -114,15 +126,10 @@ export default function SearchBar() {
                 <li key={item.slug || item.url}>
                   <Link
                     href={item.url || '#'}
-                    // Mobile-safe: let navigation start, then close bar
-                    onClick={() => {
-                      setTimeout(() => {
-                        clearAll();
-                      }, 150);
-                    }}
+                    onClick={handleResultClick}
                     className="flex items-center gap-3 px-4 py-3 hover:bg-emerald-500/10 transition-colors"
                   >
-                    {/* IMAGE THUMBNAIL */}
+                    {/* image support if you added image field to search-index.json */}
                     {item.image ? (
                       <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden bg-gray-800 border border-emerald-500/30">
                         <Image
@@ -142,7 +149,6 @@ export default function SearchBar() {
                       </div>
                     )}
 
-                    {/* TEXT */}
                     <div className="flex-1 min-w-0">
                       <div className="text-sm font-semibold text-white truncate">
                         {item.title}
